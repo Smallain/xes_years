@@ -26,7 +26,7 @@ FROM
 
 
 
---在所属分校内以工号排序排名（只计算教师无产品技术人员，不区分全职、专职、兼职）
+--教师表筛选出符合标准的人员与分校排名表进行关联
 
 DROP TABLE IF EXISTS odata_dev.app_xes_years_tea_city_rank_info;
 
@@ -41,7 +41,7 @@ AND dt.tea_id = city_rank_info.tea_id
 WHERE dt.tea_state = '0'
  AND substr(dt.create_time,1,10)<='2018-01-08';
 
-
+--辅导老师表筛选出符合标准的人员与分校排名表进行关联
 DROP TABLE IF EXISTS odata_dev.app_xes_years_tut_city_rank_info;
 
 CREATE TABLE IF NOT EXISTS odata_dev.app_xes_years_tut_city_rank_info AS
