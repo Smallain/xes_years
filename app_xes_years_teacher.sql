@@ -22,7 +22,7 @@ FROM
                    emp_no
   FROM odata_dev.dw_tutor
   WHERE is_freeze = '0'
-   AND substr(create_time,1,10)<='2018-01-08');
+   AND substr(create_time,1,10)<='2018-01-08') t;
 
 
 
@@ -30,13 +30,12 @@ FROM
 
 DROP TABLE IF EXISTS odata_dev.app_xes_years_tea_city_rank_info;
 
-
 CREATE TABLE IF NOT EXISTS odata_dev.app_xes_years_tea_city_rank_info AS
 SELECT dt.tea_id ,
        dt.city_id ,
        city_rank_info.tea_city_rank
 FROM odata_dev.dw_teacher dt
-JOIN app_xes_years_city_rank_info city_rank_info ON dt.city_id = city_rank_info.city_id
+JOIN odata_dev.app_xes_years_city_rank_info city_rank_info ON dt.city_id = city_rank_info.city_id
 AND dt.tea_id = city_rank_info.tea_id
 WHERE dt.tea_state = '0'
  AND substr(dt.create_time,1,10)<='2018-01-08';
@@ -49,7 +48,7 @@ SELECT dtu.tutor_id AS tea_id ,
        dtu.city_id ,
        city_rank_info.tea_city_rank
 FROM odata_dev.dw_tutor dtu
-JOIN app_xes_years_city_rank_info city_rank_info ON dtu.city_id = city_rank_info.city_id
+JOIN odata_dev.app_xes_years_city_rank_info city_rank_info ON dtu.city_id = city_rank_info.city_id
 AND dtu.tutor_id = city_rank_info.tea_id
 WHERE dtu.is_freeze = '0'
  AND substr(dtu.create_time,1,10)<='2018-01-08';
@@ -239,10 +238,7 @@ GROUP BY city_id,
          tea_id;
 
 
-SELECT *
-FROM odata_dev.app_xes_years_teacher_tea_stu_info
-WHERE tea_id = 'd2d24cc37ab34f86967ad7dc6ef2ee7e' ---教师统计信息
-
+---教师统计信息
  DROP TABLE IF EXISTS odata_dev.app_xes_years_teacher_statistics_info;
 
 
@@ -286,7 +282,7 @@ DROP TABLE IF EXISTS odata_dev.app_xes_years_teacher_data;
 CREATE TABLE IF NOT EXISTS odata_dev.app_xes_years_teacher_data AS
 SELECT concat(tea_city_rank_info.city_id,tea_city_rank_info.tea_id) AS id ,
        tea_city_rank_info.tea_id ,
-       regexp_replace(oddt.tea_name,'[0-9,a-z,A-Z,（,）,(,)]','') AS tea_name ,
+       regexp_replace(oddt.tea_name,'[0-9,（,）,(,)]','') AS tea_name ,
        tea_city_rank_info.city_id AS tea_city_id ,
        oddt.city_name AS tea_city_name ,
        tea_city_rank_info.tea_city_rank ,
@@ -328,9 +324,7 @@ LEFT JOIN
 AND tea_city_rank_info.tea_id = oddt.tea_id;
 
 
-SELECT *
-FROM otemp.app_xes_years_teacher_test
-WHERE tea_id='d2d24cc37ab34f86967ad7dc6ef2ee7e';
+
 
 
 INSERT overwrite TABLE otemp.app_xes_years_teacher_test
@@ -341,6 +335,3 @@ FROM odata_dev.app_xes_years_teacher_data;
 SELECT count(*)
 FROM otemp.app_xes_years_teacher_test;
 
-
-SELECT *
-FROM otemp.app_xes_years_teacher_test LIMIT 100;
